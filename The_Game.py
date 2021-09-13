@@ -17,7 +17,6 @@ def start():
     yellow = (255, 255, 102)
     black = (0, 0, 0)
     red = (213, 50, 80)
-    green = (0, 255, 0)
     blue = (50, 153, 213)
 
     # Size of the window
@@ -40,7 +39,7 @@ def start():
     snake_speed = 14
 
     # Font used in the game
-    just_font = pygame.font.SysFont("times", 25)
+    just_font = pygame.font.SysFont("comicsansms", 30)
 
     # To display the score
     def Your_score(score):
@@ -54,8 +53,8 @@ def start():
 
     # Showing game over message
     def message(msg, color):
-        mesg = just_font.render(msg, True, color)
-        dis.blit(mesg, [dis_width / 6, dis_height / 3])
+        mes = just_font.render(msg, True, color)
+        dis.blit(mes, [dis_width / 8, dis_height / 3])
 
     # Actual game
     def gameLoop():
@@ -79,6 +78,8 @@ def start():
 
             while game_close == True:
                 dis.fill(blue)
+
+                # Displaying message after the game ends
                 message("You Lost! Press R to Retry or Q to Quit", red)
                 Your_score(Length_of_snake - 1)
                 pygame.display.update()
@@ -99,8 +100,8 @@ def start():
                         file0.read()
                         file0.write(key + ' - ' + str(value) + '\n')
                         file0.close()
-            # Assigning arrow keys to control snake
 
+            # Assigning arrow keys to control snake
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     game_over = True
@@ -118,16 +119,18 @@ def start():
                         y1_change = snake_block
                         x1_change = 0
 
+            # Ending the game when snake hits boders
             if x1 >= dis_width or x1 < 0 or y1 >= dis_height or y1 < 0:
                 game_close = True
             x1 += x1_change
             y1 += y1_change
             dis.fill(blue)
 
-            # Spawnning the apple
+            # Spawnning the food
             appleImg = pygame.image.load("apple.png")
             dis.blit(appleImg, [foodx, foody, snake_block, snake_block])
 
+            # Increasing the size of snake
             snake_Head = []
             snake_Head.append(x1)
             snake_Head.append(y1)
@@ -135,20 +138,25 @@ def start():
             if len(snake_List) > Length_of_snake:
                 del snake_List[0]
 
+            # Close the game of snake touches it's body
             for x in snake_List[:-1]:
                 if x == snake_Head:
                     game_close = True
 
+            # Calling the functions
             our_snake(snake_block, snake_List)
             Your_score(Length_of_snake - 1)
 
             pygame.display.update()
 
+            # To spawn food
             if x1 == foodx and y1 == foody:
                 foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
                 foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
+                # Increase length of snake everytime the food disappears
                 Length_of_snake += 1
 
+            # Show real-time movment of snake
             clock.tick(snake_speed)
 
         pygame.quit()
@@ -160,25 +168,29 @@ def destroy():
 
 win = Tk()
 win.title('Select')
-win.iconbitmap('eagle.png')
+win.iconbitmap('select.ico')
 
 Label(win, bg="black", fg="white", text='Player Name:', font=('times',20)).grid(row=0, column=0)
 
+# Creating a input box
 e0 = Entry(win, bg="grey", fg="white", font=('times', 20), bd=3)
 e0.grid(row=1, padx=10, pady=10,column=0,columnspan=2)
 
+# Checking if the input box is empty or not
 def start0():
-    if len(e0.get())==0:
+    if len(e0.get()) == 0:
         Label(win, text='Please enter your name', bg="black", fg="red", font=('times',15)).grid(pady=(0, 20), row=2, column=0, columnspan=2)
     else:
         start()
 
+# Creating a frame for buttons
 frame = LabelFrame(win, text='Play', bd=5, padx=10, pady=4, fg='black', font=('times', 20), width=312, height=272.5, bg="grey")
 frame.grid(row=3,columnspan=2)
+
+# Creating the buttons
 Button(frame, text='Classic', command=start0, bd=5, padx=10, pady=4, bg='black', fg='white', font=('times', 10)).grid(row=3, column=0)
 Button(frame, text='Classic_Reverse', command=start0, bd=5, padx=10, pady=4, bg='black', fg='white', font=('times', 10)).grid(row=3, column=1)
 Button(frame, text='Duo', command=start0, bd=5, padx=10, pady=4, bg='black', fg='white', font=('times', 10)).grid(row=3, column=2)
-
 Button(win, text='Quit', command=destroy, bd=5, padx=10, pady=4, bg='black', fg='white', font=('times', 20)).grid(row=4, column=0,columnspan=2)
 
 # Reading all the data in the file
@@ -186,6 +198,7 @@ file0 = open('abc.txt', 'r')
 players = file0.read()
 file0.close()
 
+# Checking if the file has stored too much data
 j = 0
 p = str(players)
 for i in p:
@@ -201,6 +214,7 @@ Label(win, bg="black", fg="white", text='Previous Scores:', font=('times',20)).g
 Label(win, text=players, bg="black", fg="white", font=('times',20)).grid(pady=6,columnspan=2)
 
 win.config(bg="black")
+
 win.mainloop()
 
 
